@@ -461,7 +461,7 @@ Every pull request runs automatically on GitHub Actions ([`.github/workflows/ci.
 - **Changelog:** [CHANGELOG.md](CHANGELOG.md)
 - **License:** Released under the [MIT License](LICENSE).
 
-- **Author:** *[Your Name]*
+- **Author:** *[Md Shabbir Mia]*
 - **GitHub:** *[https://github.com/your-handle/aether_glass](https://github.com/your-handle/aether_glass)*
 - **Live Wasm Demo:** *[https://your-handle.github.io/aether_glass](https://your-handle.github.io/aether_glass)*
 - **LinkedIn:** *[https://linkedin.com/in/your-handle](https://linkedin.com/in/your-handle)*
