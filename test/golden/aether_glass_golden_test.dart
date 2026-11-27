@@ -101,23 +101,25 @@ Widget _buildPresetHarness(AetherPreset preset) {
 }
 
 void main() {
-  testWidgets('Golden regression across Bioluminescent, ObsidianFrost, SolarAmber',
-      (WidgetTester tester) async {
-    tester.view.physicalSize = const Size(420, 760);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(() {
-      tester.view.resetPhysicalSize();
-      tester.view.resetDevicePixelRatio();
-    });
+  testWidgets(
+    'Golden regression across Bioluminescent, ObsidianFrost, SolarAmber',
+    (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(420, 760);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
 
-    for (final preset in AetherPreset.values) {
-      await tester.pumpWidget(_buildPresetHarness(preset));
-      await tester.pump(const Duration(milliseconds: 40));
+      for (final preset in AetherPreset.values) {
+        await tester.pumpWidget(_buildPresetHarness(preset));
+        await tester.pump(const Duration(milliseconds: 40));
 
-      await expectLater(
-        find.byType(AetherStage),
-        matchesGoldenFile('goldens/preset_${preset.name}.png'),
-      );
-    }
-  });
+        await expectLater(
+          find.byType(AetherStage),
+          matchesGoldenFile('goldens/preset_${preset.name}.png'),
+        );
+      }
+    },
+  );
 }

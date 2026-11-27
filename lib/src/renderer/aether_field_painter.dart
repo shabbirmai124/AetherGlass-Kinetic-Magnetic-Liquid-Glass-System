@@ -14,10 +14,8 @@ import '../theme/aether_theme_data.dart';
 /// garbage-collection pressure occurs inside [paint].
 class AetherFieldPainter extends CustomPainter {
   /// Creates an [AetherFieldPainter] repainting directly from [controller].
-  AetherFieldPainter({
-    required this.controller,
-    this.paintBackground = true,
-  }) : super(repaint: controller);
+  AetherFieldPainter({required this.controller, this.paintBackground = true})
+    : super(repaint: controller);
 
   /// Centralized physics engine providing zero-allocation pool snapshots.
   final AetherFieldController controller;
@@ -99,11 +97,10 @@ class AetherFieldPainter extends CustomPainter {
         _cachedAuraColor != inner) {
       _cachedAuraCenter = ptr;
       _cachedAuraColor = inner;
-      _auraPaint.shader = ui.Gradient.radial(
-        ptr,
-        radius,
-        <Color>[inner, outer],
-      );
+      _auraPaint.shader = ui.Gradient.radial(ptr, radius, <Color>[
+        inner,
+        outer,
+      ]);
     }
     canvas.drawCircle(ptr, radius, _auraPaint);
   }
@@ -142,8 +139,10 @@ class AetherFieldPainter extends CustomPainter {
         continue;
       }
       final progress = r.progress;
-      final stroke =
-          (r.strokeWidth * (1.0 - progress * 0.72)).clamp(0.6, r.strokeWidth);
+      final stroke = (r.strokeWidth * (1.0 - progress * 0.72)).clamp(
+        0.6,
+        r.strokeWidth,
+      );
       final alpha = r.intensity.clamp(0.0, 1.0);
       final center = Offset(r.originX, r.originY);
 

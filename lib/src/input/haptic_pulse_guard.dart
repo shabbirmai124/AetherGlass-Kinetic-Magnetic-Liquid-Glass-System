@@ -9,9 +9,9 @@ final class HapticPulseGuard {
     void Function()? onSelectionClick,
     void Function()? onLightImpact,
     DateTime Function()? clock,
-  })  : _onSelectionClick = onSelectionClick ?? HapticFeedback.selectionClick,
-        _onLightImpact = onLightImpact ?? HapticFeedback.lightImpact,
-        _clock = clock ?? DateTime.now;
+  }) : _onSelectionClick = onSelectionClick ?? HapticFeedback.selectionClick,
+       _onLightImpact = onLightImpact ?? HapticFeedback.lightImpact,
+       _clock = clock ?? DateTime.now;
 
   /// Minimum interval required between consecutive tactile triggers.
   Duration cooldown;
@@ -39,10 +39,7 @@ final class HapticPulseGuard {
     return _dispatch(enabled: enabled, callback: _onLightImpact);
   }
 
-  bool _dispatch({
-    required bool enabled,
-    required void Function() callback,
-  }) {
+  bool _dispatch({required bool enabled, required void Function() callback}) {
     if (!enabled) {
       return false;
     }

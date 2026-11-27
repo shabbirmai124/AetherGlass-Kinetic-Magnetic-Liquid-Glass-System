@@ -74,8 +74,8 @@ class _AetherTelemetryHudState extends State<AetherTelemetryHud> {
           final fpsColor = budgetHealthy
               ? const Color(0xFF34D399)
               : (snap.p90Millis <= 16.67
-                  ? const Color(0xFFFBBF24)
-                  : const Color(0xFFF87171));
+                    ? const Color(0xFFFBBF24)
+                    : const Color(0xFFF87171));
 
           return Container(
             constraints: BoxConstraints(

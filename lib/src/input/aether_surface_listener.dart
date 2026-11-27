@@ -71,10 +71,7 @@ class _AetherSurfaceListenerState extends State<AetherSurfaceListener> {
         final local = _toStageLocal(event.position);
         final tracker = _trackers.remove(event.pointer);
         final velocity = tracker?.getVelocity().pixelsPerSecond;
-        widget.controller.handlePointerUp(
-          local,
-          releaseVelocity: velocity,
-        );
+        widget.controller.handlePointerUp(local, releaseVelocity: velocity);
       },
       onPointerCancel: (PointerCancelEvent event) {
         _trackers.remove(event.pointer);

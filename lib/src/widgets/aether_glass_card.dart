@@ -169,16 +169,14 @@ class _AetherGlassCardState extends State<AetherGlassCard> {
   Widget build(BuildContext context) {
     final scope = AetherStageScope.maybeOf(context, listen: true);
     final controller = _controller ?? scope?.controller;
-    final resolvedRadius = widget.borderRadius ??
+    final resolvedRadius =
+        widget.borderRadius ??
         (widget.adaptToDisplayCorners
             ? AetherAdaptiveGeometry.resolveCardRadius(context)
             : const BorderRadius.all(Radius.circular(24.0)));
 
     final isolatedContent = RepaintBoundary(
-      child: Padding(
-        padding: widget.padding,
-        child: widget.child,
-      ),
+      child: Padding(padding: widget.padding, child: widget.child),
     );
 
     if (scope == null || controller == null) {
@@ -207,8 +205,10 @@ class _AetherGlassCardState extends State<AetherGlassCard> {
           final tx = state?.offsetX.value ?? 0.0;
           final ty = state?.offsetY.value ?? 0.0;
 
-          final scale = (1.0 - depression * (reduced ? 0.01 : 0.032))
-              .clamp(0.92, 1.03);
+          final scale = (1.0 - depression * (reduced ? 0.01 : 0.032)).clamp(
+            0.92,
+            1.03,
+          );
           final flexAmount =
               (reduced ? 0.0 : theme.edgeFlexDistance) * widget.flexStrength;
 
@@ -219,14 +219,12 @@ class _AetherGlassCardState extends State<AetherGlassCard> {
             ..scaleByDouble(scale, scale, 1.0, 1.0);
 
           final baseTint = widget.tintColor ?? theme.glassTintColor;
-          final dynamicAlpha =
-              (baseTint.a + hoverGlow * 0.06).clamp(0.0, 0.65);
+          final dynamicAlpha = (baseTint.a + hoverGlow * 0.06).clamp(0.0, 0.65);
           final effectiveTint = baseTint.withValues(alpha: dynamicAlpha);
 
           final sigma = widget.blurSigma ?? theme.blurSigma;
           final shouldBlur = widget.enableBlur && sigma > 0.05;
-          final filter =
-              shouldBlur ? scope.filterResolver(sigma) : null;
+          final filter = shouldBlur ? scope.filterResolver(sigma) : null;
           final rimStroke = widget.rimStrokeWidth ?? theme.specularRimStroke;
 
           Widget glassCore = CustomPaint(
@@ -249,14 +247,8 @@ class _AetherGlassCardState extends State<AetherGlassCard> {
 
           if (filter != null) {
             glassCore = scope.enableBlurBatching
-                ? BackdropFilter.grouped(
-                    filter: filter,
-                    child: glassCore,
-                  )
-                : BackdropFilter(
-                    filter: filter,
-                    child: glassCore,
-                  );
+                ? BackdropFilter.grouped(filter: filter, child: glassCore)
+                : BackdropFilter(filter: filter, child: glassCore);
           }
 
           Widget cardBody = Transform(
@@ -321,10 +313,7 @@ class _AetherGlassCardState extends State<AetherGlassCard> {
     if (widget.enableBlur && sigma > 0.05) {
       core = ClipRRect(
         borderRadius: resolvedRadius,
-        child: BackdropFilter(
-          filter: _fallbackFilter(sigma),
-          child: core,
-        ),
+        child: BackdropFilter(filter: _fallbackFilter(sigma), child: core),
       );
     }
 
@@ -345,10 +334,7 @@ class _AetherGlassCardState extends State<AetherGlassCard> {
     final key = (sigma.clamp(0.0, 40.0) * 10.0).round();
     return _fallbackFilterCache.putIfAbsent(
       key,
-      () => ui.ImageFilter.blur(
-        sigmaX: key / 10.0,
-        sigmaY: key / 10.0,
-      ),
+      () => ui.ImageFilter.blur(sigmaX: key / 10.0, sigmaY: key / 10.0),
     );
   }
 }

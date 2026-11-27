@@ -11,8 +11,9 @@ Widget _wrapApp(Widget child) {
 }
 
 void main() {
-  testWidgets('AetherStage preserves ListView scrolling & nested taps',
-      (WidgetTester tester) async {
+  testWidgets('AetherStage preserves ListView scrolling & nested taps', (
+    WidgetTester tester,
+  ) async {
     final controller = AetherFieldController();
     addTearDown(controller.dispose);
     var tapped = 0;
@@ -63,15 +64,14 @@ void main() {
     expect(find.text('Row 0'), findsNothing);
   });
 
-  testWidgets('BackdropGroup blur batching toggles cleanly',
-      (WidgetTester tester) async {
+  testWidgets('BackdropGroup blur batching toggles cleanly', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       _wrapApp(
         const AetherStage(
           enableBlurBatching: true,
-          child: Center(
-            child: AetherGlassCard(child: Text('Grouped')),
-          ),
+          child: Center(child: AetherGlassCard(child: Text('Grouped'))),
         ),
       ),
     );
@@ -82,9 +82,7 @@ void main() {
       _wrapApp(
         const AetherStage(
           enableBlurBatching: false,
-          child: Center(
-            child: AetherGlassCard(child: Text('Ungrouped')),
-          ),
+          child: Center(child: AetherGlassCard(child: Text('Ungrouped'))),
         ),
       ),
     );

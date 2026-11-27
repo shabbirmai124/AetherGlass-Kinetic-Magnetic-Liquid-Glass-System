@@ -67,10 +67,7 @@ class AetherTelemetrySnapshot {
 /// [SchedulerBinding.addTimingsCallback] and [AetherFieldController].
 class FrameMetricsTracker extends ChangeNotifier {
   /// Creates a [FrameMetricsTracker] attached to [controller].
-  FrameMetricsTracker({
-    required this.controller,
-    this._blurBatched = true,
-  });
+  FrameMetricsTracker({required this.controller, this._blurBatched = true});
 
   static const int _windowCapacity = 120;
 
@@ -111,19 +108,19 @@ class FrameMetricsTracker extends ChangeNotifier {
 
   /// Current immutable telemetry snapshot.
   AetherTelemetrySnapshot get snapshot => AetherTelemetrySnapshot(
-        fps: _fps,
-        uiMillis: _latestUiMs,
-        rasterMillis: _latestRasterMs,
-        p50Millis: _p50Ms,
-        p90Millis: _p90Ms,
-        sampleCount: _ringCount,
-        activeRipples: controller.activeRippleCount,
-        maxRipples: controller.maxRipples,
-        moteCount: controller.particleCount,
-        registeredCards: controller.registeredCardCount,
-        isSleeping: controller.isSleeping,
-        blurBatched: _blurBatched,
-      );
+    fps: _fps,
+    uiMillis: _latestUiMs,
+    rasterMillis: _latestRasterMs,
+    p50Millis: _p50Ms,
+    p90Millis: _p90Ms,
+    sampleCount: _ringCount,
+    activeRipples: controller.activeRippleCount,
+    maxRipples: controller.maxRipples,
+    moteCount: controller.particleCount,
+    registeredCards: controller.registeredCardCount,
+    isSleeping: controller.isSleeping,
+    blurBatched: _blurBatched,
+  );
 
   /// Starts listening to engine frame timings and controller ticks.
   void start() {

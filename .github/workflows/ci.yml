@@ -1,0 +1,57 @@
+name: AetherGlass CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Pure-Dart Foreign-Language Audit
+        run: |
+          FOUND=$(find lib example/lib test -type f \( \
+            -name '*.py' -o -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \
+            -o -name '*.ts' -o -name '*.tsx' -o -name '*.jsx' \
+            -o -name '*.kt' -o -name '*.kts' -o -name '*.java' \
+            -o -name '*.swift' -o -name '*.m' -o -name '*.mm' \
+            -o -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.h' \
+            -o -name '*.frag' -o -name '*.vert' -o -name '*.glsl' \
+            -o -name '*.sh' -o -name '*.cmake' \
+          \))
+          if [ -n "$FOUND" ]; then
+            echo "Foreign-language files detected: $FOUND"
+            exit 1
+          fi
+
+      - name: Install Root Dependencies
+        run: flutter pub get
+
+      - name: Verify Zero Third-Party Runtime Dependencies
+        run: dart pub deps --no-dev
+
+      - name: Check Dart Formatting
+        run: dart format --output=none --set-exit-if-changed lib test example/lib example/test
+
+      - name: Static Analysis (Root)
+        run: flutter analyze --fatal-infos --fatal-warnings
+
+      - name: Run Root Unit, Widget, Benchmark & Golden Tests
+        run: flutter test
+
+      - name: Verify Example Package & Build WebAssembly (Wasm)
+        working-directory: example
+        run: |
+          flutter pub get
+          flutter analyze --fatal-infos --fatal-warnings
+          flutter test
+          flutter build web --wasm

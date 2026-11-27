@@ -21,7 +21,8 @@ abstract final class AetherAdaptiveGeometry {
       return fallback;
     }
 
-    final hasCurve = displayRadii.topLeft.x > 0.0 ||
+    final hasCurve =
+        displayRadii.topLeft.x > 0.0 ||
         displayRadii.topRight.x > 0.0 ||
         displayRadii.bottomLeft.x > 0.0 ||
         displayRadii.bottomRight.x > 0.0;
@@ -59,10 +60,11 @@ abstract final class AetherAdaptiveGeometry {
       return base + viewPadding;
     }
 
-    final topCurve =
-        math.max(displayRadii.topLeft.y, displayRadii.topRight.y);
-    final bottomCurve =
-        math.max(displayRadii.bottomLeft.y, displayRadii.bottomRight.y);
+    final topCurve = math.max(displayRadii.topLeft.y, displayRadii.topRight.y);
+    final bottomCurve = math.max(
+      displayRadii.bottomLeft.y,
+      displayRadii.bottomRight.y,
+    );
     final extraTop = topCurve > 24.0 ? magneticReserve : 0.0;
     final extraBottom = bottomCurve > 24.0 ? magneticReserve : 0.0;
 

@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:aether_glass/aether_glass.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('Physics engine step latency benchmark (6 waves, 50 motes, 6 cards)',
-      () {
+  test('Physics engine step latency benchmark (6 waves, 50 motes, 6 cards)', () {
     final controller = AetherFieldController(
       theme: AetherPresets.bioluminescent,
       autoSleep: false,
@@ -14,7 +14,12 @@ void main() {
     for (var i = 0; i < 6; i++) {
       controller.registerCard(
         i,
-        Rect.fromLTWH(24.0 + (i % 2) * 190.0, 80.0 + (i ~/ 2) * 200.0, 172.0, 140.0),
+        Rect.fromLTWH(
+          24.0 + (i % 2) * 190.0,
+          80.0 + (i ~/ 2) * 200.0,
+          172.0,
+          140.0,
+        ),
       );
     }
 
@@ -41,8 +46,7 @@ void main() {
     sw.stop();
 
     final avgMicros = sw.elapsedMicroseconds / iterations;
-    // ignore: avoid_print
-    print(
+    debugPrint(
       'BENCHMARK: $iterations steps in ${sw.elapsedMilliseconds}ms '
       '(${avgMicros.toStringAsFixed(2)} us/frame = '
       '${(avgMicros / 1000.0).toStringAsFixed(4)} ms/frame)',

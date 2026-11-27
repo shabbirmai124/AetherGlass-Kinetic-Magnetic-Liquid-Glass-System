@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 
@@ -9,67 +8,11 @@ import '../theme/aether_presets.dart';
 import '../theme/aether_theme_data.dart';
 import 'ambient_mote_pool.dart';
 import 'ripple_wave_pool.dart';
+import 'spatial_card_node.dart';
 import 'spring_solver.dart';
 import 'wake_trail_buffer.dart';
 
-/// Per-card or per-button spatial spring deformation state.
-final class AetherCardForceState {
-  /// Creates a force state slot for a glass surface identified by [id].
-  AetherCardForceState({
-    required this.id,
-    required this.bounds,
-    required int rippleCapacity,
-  }) : reactedRippleGenerations = Int32List(rippleCapacity);
-
-  /// Unique token identifying the registered card or button state.
-  final Object id;
-
-  /// Current bounding rectangle in stage-local coordinates.
-  Rect bounds;
-
-  /// 3D X-axis tilt spring in radians (capped at 7.0 degrees).
-  final AetherSpringState tiltX = AetherSpringState();
-
-  /// 3D Y-axis tilt spring in radians (capped at 7.0 degrees).
-  final AetherSpringState tiltY = AetherSpringState();
-
-  /// Inward scale depression spring (`0..1`).
-  final AetherSpringState depression = AetherSpringState();
-
-  /// Horizontal magnetic Bezier edge pull (`-1..1`).
-  final AetherSpringState edgePullX = AetherSpringState();
-
-  /// Vertical magnetic Bezier edge pull (`-1..1`).
-  final AetherSpringState edgePullY = AetherSpringState();
-
-  /// Specular rim glow intensity spring (`0..1`).
-  final AetherSpringState hoverGlow = AetherSpringState();
-
-  /// Press-and-hold magnetic suction spring (`0..1`).
-  final AetherSpringState suction = AetherSpringState();
-
-  /// Physical horizontal elastic translation in pixels (used by magnetic buttons).
-  final AetherSpringState offsetX = AetherSpringState();
-
-  /// Physical vertical elastic translation in pixels (used by magnetic buttons).
-  final AetherSpringState offsetY = AetherSpringState();
-
-  /// Maximum magnetic translation distance in logical pixels (`0` for cards).
-  double maxMagneticOffset = 0.0;
-
-  /// Tracks latest ripple generation applied per slot so each passing wave
-  /// delivers a single clean angular impulse inside the 40 px wavefront band.
-  final Int32List reactedRippleGenerations;
-
-  /// Normalized specular gradient alignment X in `[-1.0, 1.0]`.
-  double specularAlignX = -0.55;
-
-  /// Normalized specular gradient alignment Y in `[-1.0, 1.0]`.
-  double specularAlignY = -0.55;
-
-  /// Whether the peak-stretch haptic snap has fired during the current press.
-  bool hapticPeakFired = false;
-}
+export 'spatial_card_node.dart';
 
 /// Centralized single-Ticker physics controller driving AetherGlass.
 ///
@@ -87,11 +30,11 @@ class AetherFieldController extends ChangeNotifier {
     this.animateParticlesWhenIdle = false,
     this._reducedMotion = false,
     HapticPulseGuard? hapticGuard,
-  })  : _theme = theme ?? AetherPresets.bioluminescent,
-        _ripplePool = RippleWavePool(capacity: maxRipples),
-        _motePool = AmbientMotePool(capacity: particleCount),
-        _trailBuffer = WakeTrailBuffer(capacity: maxTrailPoints),
-        _hapticGuard = hapticGuard ?? HapticPulseGuard();
+  }) : _theme = theme ?? AetherPresets.bioluminescent,
+       _ripplePool = RippleWavePool(capacity: maxRipples),
+       _motePool = AmbientMotePool(capacity: particleCount),
+       _trailBuffer = WakeTrailBuffer(capacity: maxTrailPoints),
+       _hapticGuard = hapticGuard ?? HapticPulseGuard();
 
   /// Maximum safe delta time (33 ms) preventing physics divergence after pauses.
   static const double maxDeltaSeconds = SpringSolver.maxFrameDeltaSeconds;
@@ -294,7 +237,8 @@ class AetherFieldController extends ChangeNotifier {
     if (size.width <= 0.0 || size.height <= 0.0) {
       return;
     }
-    final changed = (_viewportSize.width - size.width).abs() > 0.5 ||
+    final changed =
+        (_viewportSize.width - size.width).abs() > 0.5 ||
         (_viewportSize.height - size.height).abs() > 0.5;
     if (!changed) {
       return;
@@ -368,8 +312,9 @@ class AetherFieldController extends ChangeNotifier {
     AetherRippleKind kind = AetherRippleKind.tap,
   }) {
     final effectiveSpeed = speed ?? _theme.waveSpeed;
-    final scaledIntensity =
-        _reducedMotion ? (intensity * 0.20).clamp(0.0, 0.25) : intensity;
+    final scaledIntensity = _reducedMotion
+        ? (intensity * 0.20).clamp(0.0, 0.25)
+        : intensity;
     if (scaledIntensity <= 0.01) {
       return;
     }
@@ -497,7 +442,8 @@ class AetherFieldController extends ChangeNotifier {
       position.dx - _pointerDownX,
       position.dy - _pointerDownY,
     );
-    final wasQuickTap = _pointerHoldSeconds < 0.24 &&
+    final wasQuickTap =
+        _pointerHoldSeconds < 0.24 &&
         _pointerTravelDistance < 18.0 &&
         netDisp < 14.0;
     final wasFastSwipe = speed > 420.0 || _pointerTravelDistance > 42.0;
@@ -689,8 +635,9 @@ class AetherFieldController extends ChangeNotifier {
         math.min(_theme.maxTiltRadians, maxTiltRadiansCap) * motionScale;
     final activationRadius = math.max(_theme.activationRadius, 1.0);
     final halfBand = math.max(_theme.wavefrontBand * 0.5, 8.0);
-    final suctionBoost =
-        _isPointerDown ? (_pointerHoldSeconds / 0.45).clamp(0.0, 1.0) : 0.0;
+    final suctionBoost = _isPointerDown
+        ? (_pointerHoldSeconds / 0.45).clamp(0.0, 1.0)
+        : 0.0;
     final ripples = _ripplePool.slots;
 
     for (var i = 0; i < _cards.length; i++) {
@@ -719,8 +666,10 @@ class AetherFieldController extends ChangeNotifier {
               ripple.radius >= dist - halfBand) {
             card.reactedRippleGenerations[r] = ripple.generation;
             final distAtten =
-                (1.0 - (dist / math.max(ripple.maxRadius, 1.0)) * 0.62)
-                    .clamp(0.22, 1.0);
+                (1.0 - (dist / math.max(ripple.maxRadius, 1.0)) * 0.62).clamp(
+                  0.22,
+                  1.0,
+                );
             final strength = ripple.intensity * distAtten * 0.94;
             if (dist > 6.0) {
               final invDist = 1.0 / dist;
@@ -781,12 +730,14 @@ class AetherFieldController extends ChangeNotifier {
             final magLen = _hypot(nx, ny);
             if (magLen > 0.001) {
               final clampedScale = math.min(magLen, 1.0) / magLen;
-              targetOffsetX = nx *
+              targetOffsetX =
+                  nx *
                   clampedScale *
                   card.maxMagneticOffset *
                   smoothProx *
                   offFactor;
-              targetOffsetY = ny *
+              targetOffsetY =
+                  ny *
                   clampedScale *
                   card.maxMagneticOffset *
                   smoothProx *
@@ -794,12 +745,12 @@ class AetherFieldController extends ChangeNotifier {
             }
           }
 
-          targetTiltY = (nx * 0.68 + (_pointerVx / 1600.0) * 0.35)
-                  .clamp(-1.0, 1.0) *
+          targetTiltY =
+              (nx * 0.68 + (_pointerVx / 1600.0) * 0.35).clamp(-1.0, 1.0) *
               maxTilt *
               smoothProx;
-          targetTiltX = (-ny * 0.68 - (_pointerVy / 1600.0) * 0.35)
-                  .clamp(-1.0, 1.0) *
+          targetTiltX =
+              (-ny * 0.68 - (_pointerVy / 1600.0) * 0.35).clamp(-1.0, 1.0) *
               maxTilt *
               smoothProx;
         }

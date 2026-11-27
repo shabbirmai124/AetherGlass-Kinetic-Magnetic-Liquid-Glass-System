@@ -62,8 +62,8 @@ final class AetherMote {
 final class AmbientMotePool {
   /// Creates a pool pre-allocated with [capacity] motes (default 50).
   AmbientMotePool({this.capacity = 50})
-      : assert(capacity >= 0 && capacity <= 150),
-        _motes = _buildPool(capacity) {
+    : assert(capacity >= 0 && capacity <= 150),
+      _motes = _buildPool(capacity) {
     _view = UnmodifiableListView<AetherMote>(_motes);
   }
 
@@ -159,7 +159,8 @@ final class AmbientMotePool {
       if (applyAmbientDrift && !reducedMotion) {
         m.phase += 0.65 * dt;
         final driftX = math.cos(m.phase + m.driftAngle) * ambientDriftSpeed;
-        final driftY = math.sin(m.phase * 0.85 + m.driftAngle) * ambientDriftSpeed;
+        final driftY =
+            math.sin(m.phase * 0.85 + m.driftAngle) * ambientDriftSpeed;
         final orbitX = m.homeNormX * width + driftX * 1.6;
         final orbitY = m.homeNormY * height + driftY * 1.6;
         m.vx += (orbitX - m.x) * 1.45 * dt;

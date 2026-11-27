@@ -24,10 +24,7 @@ class CaptureTouchIndicator extends StatelessWidget {
     return IgnorePointer(
       child: RepaintBoundary(
         child: CustomPaint(
-          painter: _CaptureTouchPainter(
-            controller: controller,
-            radius: radius,
-          ),
+          painter: _CaptureTouchPainter(controller: controller, radius: radius),
         ),
       ),
     );
@@ -35,10 +32,8 @@ class CaptureTouchIndicator extends StatelessWidget {
 }
 
 class _CaptureTouchPainter extends CustomPainter {
-  _CaptureTouchPainter({
-    required this.controller,
-    required this.radius,
-  }) : super(repaint: controller);
+  _CaptureTouchPainter({required this.controller, required this.radius})
+    : super(repaint: controller);
 
   final AetherFieldController controller;
   final double radius;
@@ -57,15 +52,17 @@ class _CaptureTouchPainter extends CustomPainter {
     if (!controller.showTouchIndicator) {
       return;
     }
-    final pos = controller.pinnedTouchIndicator ??
+    final pos =
+        controller.pinnedTouchIndicator ??
         (controller.hasPointer ? controller.pointerPosition : null);
     if (pos == null) {
       return;
     }
 
     final color = controller.theme.specularColor;
-    _outerGlowPaint.color =
-        controller.theme.ripplePrimaryColor.withValues(alpha: 0.28);
+    _outerGlowPaint.color = controller.theme.ripplePrimaryColor.withValues(
+      alpha: 0.28,
+    );
     _fillPaint.color = color.withValues(alpha: 0.14);
     _ringPaint.color = color.withValues(alpha: 0.85);
     _corePaint.color = color.withValues(alpha: 0.95);

@@ -40,29 +40,31 @@ void main() {
       expect(pool.slots.length, 6);
     });
 
-    test('AmbientMotePool seeds 50 motes and applies 0.94 drag & deflection',
-        () {
-      final pool = AmbientMotePool(capacity: 50);
-      expect(pool.motes.length, 50);
+    test(
+      'AmbientMotePool seeds 50 motes and applies 0.94 drag & deflection',
+      () {
+        final pool = AmbientMotePool(capacity: 50);
+        expect(pool.motes.length, 50);
 
-      pool.resize(const Size(600, 800));
-      for (final mote in pool.motes) {
-        expect(mote.seeded, isTrue);
-        expect(mote.x, inInclusiveRange(0.0, 600.0));
-        expect(mote.y, inInclusiveRange(0.0, 800.0));
-      }
+        pool.resize(const Size(600, 800));
+        for (final mote in pool.motes) {
+          expect(mote.seeded, isTrue);
+          expect(mote.x, inInclusiveRange(0.0, 600.0));
+          expect(mote.y, inInclusiveRange(0.0, 800.0));
+        }
 
-      pool.applyPointerWake(px: 300.0, py: 400.0, dx: 20.0, dy: -10.0);
-      final moved = pool.step(
-        dt: 1.0 / 60.0,
-        viewportSize: const Size(600, 800),
-        ripples: const <AetherRipple>[],
-        reducedMotion: false,
-        applyAmbientDrift: true,
-      );
-      expect(moved, isTrue);
-      expect(pool.motes.length, 50);
-    });
+        pool.applyPointerWake(px: 300.0, py: 400.0, dx: 20.0, dy: -10.0);
+        final moved = pool.step(
+          dt: 1.0 / 60.0,
+          viewportSize: const Size(600, 800),
+          ripples: const <AetherRipple>[],
+          reducedMotion: false,
+          applyAmbientDrift: true,
+        );
+        expect(moved, isTrue);
+        expect(pool.motes.length, 50);
+      },
+    );
 
     test('WakeTrailBuffer wraps 14-point ring buffer and fades in 280ms', () {
       final buffer = WakeTrailBuffer(capacity: 14, fadeSeconds: 0.28);

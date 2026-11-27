@@ -8,16 +8,15 @@ void main() {
     test('wakes on touch, propagates 3D wavefront tilt, and auto-sleeps', () {
       var wakes = 0;
       var sleeps = 0;
-      final controller = AetherFieldController(
-        theme: AetherPresets.bioluminescent,
-      )
-        ..onWakeRequested = () {
-          wakes++;
-        }
-        ..onSleepRequested = () {
-          sleeps++;
-        }
-        ..setViewportSize(const Size(600, 800));
+      final controller =
+          AetherFieldController(theme: AetherPresets.bioluminescent)
+            ..onWakeRequested = () {
+              wakes++;
+            }
+            ..onSleepRequested = () {
+              sleeps++;
+            }
+            ..setViewportSize(const Size(600, 800));
 
       final cardToken = Object();
       final card = controller.registerCard(

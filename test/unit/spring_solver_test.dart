@@ -38,32 +38,35 @@ void main() {
       expect(simulate(120.0, 1.5), 1.0);
     });
 
-    test('clamps extreme dt spikes <= 0.033s and snaps below rest threshold', () {
-      final state = AetherSpringState(value: 0.0, velocity: 0.0);
+    test(
+      'clamps extreme dt spikes <= 0.033s and snaps below rest threshold',
+      () {
+        final state = AetherSpringState(value: 0.0, velocity: 0.0);
 
-      // Simulate a 10-second background resume spike.
-      SpringSolver.step(
-        state: state,
-        target: 1.0,
-        stiffness: 260.0,
-        damping: 18.0,
-        dt: 10.0,
-      );
-      expect(state.value.isFinite, isTrue);
-      expect(state.value.abs(), lessThan(0.5));
+        // Simulate a 10-second background resume spike.
+        SpringSolver.step(
+          state: state,
+          target: 1.0,
+          stiffness: 260.0,
+          damping: 18.0,
+          dt: 10.0,
+        );
+        expect(state.value.isFinite, isTrue);
+        expect(state.value.abs(), lessThan(0.5));
 
-      // Verify snap-to-rest when |velocity| < 0.01 and |displacement| < 0.01.
-      final nearRest = AetherSpringState(value: 0.9998, velocity: 0.002);
-      final settled = SpringSolver.step(
-        state: nearRest,
-        target: 1.0,
-        stiffness: 260.0,
-        damping: 18.0,
-        dt: 1.0 / 60.0,
-      );
-      expect(settled, isTrue);
-      expect(nearRest.value, 1.0);
-      expect(nearRest.velocity, 0.0);
-    });
+        // Verify snap-to-rest when |velocity| < 0.01 and |displacement| < 0.01.
+        final nearRest = AetherSpringState(value: 0.9998, velocity: 0.002);
+        final settled = SpringSolver.step(
+          state: nearRest,
+          target: 1.0,
+          stiffness: 260.0,
+          damping: 18.0,
+          dt: 1.0 / 60.0,
+        );
+        expect(settled, isTrue);
+        expect(nearRest.value, 1.0);
+        expect(nearRest.velocity, 0.0);
+      },
+    );
   });
 }

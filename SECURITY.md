@@ -3,16 +3,21 @@
 ## Supported Versions
 
 | Version | Supported |
-| --- | --- |
+| :--- | :--- |
 | `1.0.x` | Yes |
 
-## Architecture & Attack Surface
+## Architecture & Zero-Dependency Security Posture
 
 **AetherGlass** executes 100% inside the Dart/Flutter runtime with:
-- Zero third-party package dependencies
-- Zero native platform channels (no Kotlin, Swift, C++, or JavaScript FFI bridges)
-- Zero network I/O, filesystem access, or dynamic code execution
+- Zero third-party runtime package dependencies (`flutter: sdk: flutter` only)
+- Zero native platform channels or foreign-language code (no Kotlin, Swift, Objective-C, C/C++, GLSL shaders, or custom JavaScript bridges)
+- Zero network I/O, runtime filesystem access, or dynamic code evaluation
 
 ## Reporting a Vulnerability
 
-If you discover a crash, memory leak, integer/floating-point instability (such as `NaN` physics divergence on malformed pointer timestamps), or denial-of-service vector, please report it responsibly by opening a private security advisory on GitHub or contacting the maintainer with reproduction steps and Flutter SDK version (`flutter --version`).
+If you discover a crash, memory leak, floating-point instability (such as `NaN`/`Infinity` physics divergence on malformed pointer timestamps or degenerate viewport rects), or denial-of-service vector, please report it responsibly to the maintainer:
+
+- **Maintainer:** Md Shabbir Mia
+- **Email:** `shabbirmia520@gmail.com`
+
+Include minimal reproduction steps, expected vs. actual behavior, and your Flutter/Dart SDK version (`flutter --version`).

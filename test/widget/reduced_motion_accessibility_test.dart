@@ -3,8 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Adapts card radius from hardware displayCornerRadii',
-      (WidgetTester tester) async {
+  testWidgets('Adapts card radius from hardware displayCornerRadii', (
+    WidgetTester tester,
+  ) async {
     late BorderRadius resolved;
     await tester.pumpWidget(
       MediaQuery(
@@ -25,8 +26,9 @@ void main() {
     expect(resolved.bottomRight, const Radius.elliptical(28.0, 28.0));
   });
 
-  testWidgets('Honors MediaQuery.disableAnimations reduced-motion preference',
-      (WidgetTester tester) async {
+  testWidgets('Honors MediaQuery.disableAnimations reduced-motion preference', (
+    WidgetTester tester,
+  ) async {
     final controller = AetherFieldController();
     addTearDown(controller.dispose);
 

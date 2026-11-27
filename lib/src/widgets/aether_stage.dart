@@ -79,8 +79,8 @@ class AetherStage extends StatefulWidget {
     this.animateParticlesWhenIdle = false,
     this.reducedMotion,
     this.showPerformanceHud = false,
-    this.hudAlignment = Alignment.topRight,
-    this.hudPadding = const EdgeInsets.all(12.0),
+    this.hudAlignment = AlignmentDirectional.topEnd,
+    this.hudPadding = const EdgeInsetsDirectional.all(12.0),
   });
 
   /// Interactive foreground UI tree containing cards, buttons, and lists.
@@ -224,10 +224,7 @@ class _AetherStageState extends State<AetherStage>
     final key = (safeSigma * 10.0).round();
     return _hoistedFilterCache.putIfAbsent(
       key,
-      () => ui.ImageFilter.blur(
-        sigmaX: key / 10.0,
-        sigmaY: key / 10.0,
-      ),
+      () => ui.ImageFilter.blur(sigmaX: key / 10.0, sigmaY: key / 10.0),
     );
   }
 
@@ -253,10 +250,7 @@ class _AetherStageState extends State<AetherStage>
 
     Widget content = widget.child;
     if (widget.enableBlurBatching) {
-      content = BackdropGroup(
-        backdropKey: _backdropKey,
-        child: content,
-      );
+      content = BackdropGroup(backdropKey: _backdropKey, child: content);
     }
 
     return AetherStageScope(

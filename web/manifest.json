@@ -1,0 +1,11 @@
+{
+  "name": "AetherGlass",
+  "short_name": "AetherGlass",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#040B16",
+  "theme_color": "#040B16",
+  "description": "Zero-dependency pure-Flutter kinetic liquid-glass UI and spatial physics rendering engine.",
+  "orientation": "any",
+  "prefer_related_applications": false
+}

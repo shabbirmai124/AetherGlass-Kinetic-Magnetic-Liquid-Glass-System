@@ -96,12 +96,12 @@ final class AetherRipple {
 final class RippleWavePool {
   /// Creates a pool pre-allocated with [capacity] reusable slots (default 6).
   RippleWavePool({this.capacity = 6})
-      : assert(capacity > 0 && capacity <= 16),
-        _slots = List<AetherRipple>.generate(
-          capacity,
-          (_) => AetherRipple(),
-          growable: false,
-        ) {
+    : assert(capacity > 0 && capacity <= 16),
+      _slots = List<AetherRipple>.generate(
+        capacity,
+        (_) => AetherRipple(),
+        growable: false,
+      ) {
     _view = UnmodifiableListView<AetherRipple>(_slots);
   }
 

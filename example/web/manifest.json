@@ -1,0 +1,11 @@
+{
+  "name": "AetherGlass Showcase",
+  "short_name": "AetherGlass",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#040B16",
+  "theme_color": "#040B16",
+  "description": "Pure-Flutter kinetic liquid-glass rendering and spatial physics showcase by Md Shabbir Mia.",
+  "orientation": "any",
+  "prefer_related_applications": false
+}

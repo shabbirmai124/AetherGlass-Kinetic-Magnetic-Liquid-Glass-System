@@ -1,3 +1,6 @@
+import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 /// Built-in visual and physics personality identifiers for AetherGlass.
@@ -15,7 +18,7 @@ enum AetherPreset {
 /// Immutable configuration defining spring constants, wave optics, and
 /// color palette for an [AetherStage].
 @immutable
-class AetherThemeData {
+class AetherThemeData with Diagnosticable {
   /// Creates an [AetherThemeData] instance with enterprise defaults aligned to
   /// 120Hz Impeller budgets.
   const AetherThemeData({
@@ -125,6 +128,118 @@ class AetherThemeData {
   /// Trailing tail color of the wake ribbon.
   final Color ribbonEndColor;
 
+  /// Linearly interpolates between two [AetherThemeData] configurations at
+  /// progress [t] in `[0.0, 1.0]`.
+  static AetherThemeData lerp(AetherThemeData a, AetherThemeData b, double t) {
+    final clamped = t.clamp(0.0, 1.0);
+    if (clamped == 0.0) {
+      return a;
+    }
+    if (clamped == 1.0) {
+      return b;
+    }
+
+    final maxStops = a.backgroundColors.length > b.backgroundColors.length
+        ? a.backgroundColors.length
+        : b.backgroundColors.length;
+    final lerpedBackground = List<Color>.generate(maxStops, (int i) {
+      final ca =
+          a.backgroundColors[i < a.backgroundColors.length
+              ? i
+              : a.backgroundColors.length - 1];
+      final cb =
+          b.backgroundColors[i < b.backgroundColors.length
+              ? i
+              : b.backgroundColors.length - 1];
+      return Color.lerp(ca, cb, clamped) ?? cb;
+    }, growable: false);
+
+    final cooldownMicros = ui.lerpDouble(
+      a.hapticCooldown.inMicroseconds.toDouble(),
+      b.hapticCooldown.inMicroseconds.toDouble(),
+      clamped,
+    )!;
+
+    return AetherThemeData(
+      preset: clamped < 0.5 ? a.preset : b.preset,
+      name: clamped < 0.5 ? a.name : b.name,
+      stiffness: ui.lerpDouble(a.stiffness, b.stiffness, clamped)!,
+      damping: ui.lerpDouble(a.damping, b.damping, clamped)!,
+      pointerStiffness: ui.lerpDouble(
+        a.pointerStiffness,
+        b.pointerStiffness,
+        clamped,
+      )!,
+      pointerDamping: ui.lerpDouble(
+        a.pointerDamping,
+        b.pointerDamping,
+        clamped,
+      )!,
+      blurSigma: ui.lerpDouble(a.blurSigma, b.blurSigma, clamped)!,
+      maxTiltRadians: ui.lerpDouble(
+        a.maxTiltRadians,
+        b.maxTiltRadians,
+        clamped,
+      )!,
+      edgeFlexDistance: ui.lerpDouble(
+        a.edgeFlexDistance,
+        b.edgeFlexDistance,
+        clamped,
+      )!,
+      activationRadius: ui.lerpDouble(
+        a.activationRadius,
+        b.activationRadius,
+        clamped,
+      )!,
+      waveSpeed: ui.lerpDouble(a.waveSpeed, b.waveSpeed, clamped)!,
+      wavefrontBand: ui.lerpDouble(a.wavefrontBand, b.wavefrontBand, clamped)!,
+      specularRimStroke: ui.lerpDouble(
+        a.specularRimStroke,
+        b.specularRimStroke,
+        clamped,
+      )!,
+      specularIntensity: ui.lerpDouble(
+        a.specularIntensity,
+        b.specularIntensity,
+        clamped,
+      )!,
+      enableHaptics: clamped < 0.5 ? a.enableHaptics : b.enableHaptics,
+      hapticCooldown: Duration(microseconds: cooldownMicros.round()),
+      backgroundColors: lerpedBackground,
+      glassTintColor:
+          Color.lerp(a.glassTintColor, b.glassTintColor, clamped) ??
+          b.glassTintColor,
+      glassBorderColor:
+          Color.lerp(a.glassBorderColor, b.glassBorderColor, clamped) ??
+          b.glassBorderColor,
+      specularColor:
+          Color.lerp(a.specularColor, b.specularColor, clamped) ??
+          b.specularColor,
+      ripplePrimaryColor:
+          Color.lerp(a.ripplePrimaryColor, b.ripplePrimaryColor, clamped) ??
+          b.ripplePrimaryColor,
+      rippleSecondaryColor:
+          Color.lerp(a.rippleSecondaryColor, b.rippleSecondaryColor, clamped) ??
+          b.rippleSecondaryColor,
+      particlePrimaryColor:
+          Color.lerp(a.particlePrimaryColor, b.particlePrimaryColor, clamped) ??
+          b.particlePrimaryColor,
+      particleSecondaryColor:
+          Color.lerp(
+            a.particleSecondaryColor,
+            b.particleSecondaryColor,
+            clamped,
+          ) ??
+          b.particleSecondaryColor,
+      ribbonStartColor:
+          Color.lerp(a.ribbonStartColor, b.ribbonStartColor, clamped) ??
+          b.ribbonStartColor,
+      ribbonEndColor:
+          Color.lerp(a.ribbonEndColor, b.ribbonEndColor, clamped) ??
+          b.ribbonEndColor,
+    );
+  }
+
   /// Returns a copy with selective parameter overrides.
   AetherThemeData copyWith({
     AetherPreset? preset,
@@ -186,6 +301,31 @@ class AetherThemeData {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(EnumProperty<AetherPreset>('preset', preset));
+    properties.add(StringProperty('name', name));
+    properties.add(DoubleProperty('stiffness', stiffness));
+    properties.add(DoubleProperty('damping', damping));
+    properties.add(DoubleProperty('blurSigma', blurSigma));
+    properties.add(DoubleProperty('edgeFlexDistance', edgeFlexDistance));
+    properties.add(DoubleProperty('activationRadius', activationRadius));
+    properties.add(DoubleProperty('waveSpeed', waveSpeed));
+    properties.add(DoubleProperty('specularRimStroke', specularRimStroke));
+    properties.add(
+      FlagProperty(
+        'enableHaptics',
+        value: enableHaptics,
+        ifTrue: 'haptics enabled',
+        ifFalse: 'haptics disabled',
+      ),
+    );
+    properties.add(ColorProperty('glassTintColor', glassTintColor));
+    properties.add(ColorProperty('specularColor', specularColor));
+    properties.add(ColorProperty('ripplePrimaryColor', ripplePrimaryColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
       return true;
@@ -221,33 +361,33 @@ class AetherThemeData {
 
   @override
   int get hashCode => Object.hashAll(<Object?>[
-        preset,
-        name,
-        stiffness,
-        damping,
-        pointerStiffness,
-        pointerDamping,
-        blurSigma,
-        maxTiltRadians,
-        edgeFlexDistance,
-        activationRadius,
-        waveSpeed,
-        wavefrontBand,
-        specularRimStroke,
-        specularIntensity,
-        enableHaptics,
-        hapticCooldown,
-        Object.hashAll(backgroundColors),
-        glassTintColor,
-        glassBorderColor,
-        specularColor,
-        ripplePrimaryColor,
-        rippleSecondaryColor,
-        particlePrimaryColor,
-        particleSecondaryColor,
-        ribbonStartColor,
-        ribbonEndColor,
-      ]);
+    preset,
+    name,
+    stiffness,
+    damping,
+    pointerStiffness,
+    pointerDamping,
+    blurSigma,
+    maxTiltRadians,
+    edgeFlexDistance,
+    activationRadius,
+    waveSpeed,
+    wavefrontBand,
+    specularRimStroke,
+    specularIntensity,
+    enableHaptics,
+    hapticCooldown,
+    Object.hashAll(backgroundColors),
+    glassTintColor,
+    glassBorderColor,
+    specularColor,
+    ripplePrimaryColor,
+    rippleSecondaryColor,
+    particlePrimaryColor,
+    particleSecondaryColor,
+    ribbonStartColor,
+    ribbonEndColor,
+  ]);
 
   static bool _listsEqual(List<Color> a, List<Color> b) {
     if (identical(a, b)) {

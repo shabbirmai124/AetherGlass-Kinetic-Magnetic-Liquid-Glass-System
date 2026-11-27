@@ -1,0 +1,17 @@
+# Dart & Flutter build artifacts
+.dart_tool/
+.packages
+build/
+pubspec.lock
+example/.dart_tool/
+example/build/
+example/pubspec.lock
+
+# Test & IDE artifacts
+coverage/
+test/golden/failures/
+.idea/
+*.iml
+.DS_Store
+.playwright-cli/
+public/

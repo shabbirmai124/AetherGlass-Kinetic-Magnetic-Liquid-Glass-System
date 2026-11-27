@@ -43,40 +43,80 @@ Future<void> _loadSdkFonts() async {
     }
   }
 
-  if (fontsDir == null) {
-    return;
+  if (fontsDir != null) {
+    final regular = File(
+      '${fontsDir.path}${Platform.pathSeparator}roboto-regular.ttf',
+    );
+    final bold = File(
+      '${fontsDir.path}${Platform.pathSeparator}roboto-bold.ttf',
+    );
+    final medium = File(
+      '${fontsDir.path}${Platform.pathSeparator}roboto-medium.ttf',
+    );
+    if (regular.existsSync()) {
+      Future<ByteData> loadFile(String name) {
+        final bytes = File(
+          '${fontsDir!.path}${Platform.pathSeparator}$name',
+        ).readAsBytesSync();
+        return Future<ByteData>.value(ByteData.sublistView(bytes));
+      }
+
+      final sansLoader = FontLoader(_docFontFamily)
+        ..addFont(loadFile('roboto-regular.ttf'));
+      if (medium.existsSync()) {
+        sansLoader.addFont(loadFile('roboto-medium.ttf'));
+      }
+      if (bold.existsSync()) {
+        sansLoader.addFont(loadFile('roboto-bold.ttf'));
+      }
+      await sansLoader.load();
+
+      final monoLoader = FontLoader('monospace')
+        ..addFont(loadFile('roboto-regular.ttf'));
+      if (bold.existsSync()) {
+        monoLoader.addFont(loadFile('roboto-bold.ttf'));
+      }
+      await monoLoader.load();
+      return;
+    }
   }
 
-  Future<ByteData> loadFile(String name) {
-    final bytes = File(
-      '${fontsDir!.path}${Platform.pathSeparator}$name',
-    ).readAsBytesSync();
+  // Fallback to standard system TrueType fonts on Linux headless runners.
+  Future<ByteData> loadAbsolute(File file) {
+    final bytes = file.readAsBytesSync();
     return Future<ByteData>.value(ByteData.sublistView(bytes));
   }
 
-  final regular = File('${fontsDir.path}${Platform.pathSeparator}roboto-regular.ttf');
-  final bold = File('${fontsDir.path}${Platform.pathSeparator}roboto-bold.ttf');
-  final medium = File('${fontsDir.path}${Platform.pathSeparator}roboto-medium.ttf');
-  if (!regular.existsSync()) {
-    return;
+  final sansRegular = File(
+    '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
+  );
+  final sansBold = File(
+    '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
+  );
+  final monoRegular = File(
+    '/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf',
+  );
+  final monoBold = File(
+    '/usr/share/fonts/truetype/liberation/LiberationMono-Bold.ttf',
+  );
+
+  if (sansRegular.existsSync()) {
+    final sansLoader = FontLoader(_docFontFamily)
+      ..addFont(loadAbsolute(sansRegular));
+    if (sansBold.existsSync()) {
+      sansLoader.addFont(loadAbsolute(sansBold));
+    }
+    await sansLoader.load();
   }
 
-  final sansLoader = FontLoader(_docFontFamily)
-    ..addFont(loadFile('roboto-regular.ttf'));
-  if (medium.existsSync()) {
-    sansLoader.addFont(loadFile('roboto-medium.ttf'));
+  if (monoRegular.existsSync()) {
+    final monoLoader = FontLoader('monospace')
+      ..addFont(loadAbsolute(monoRegular));
+    if (monoBold.existsSync()) {
+      monoLoader.addFont(loadAbsolute(monoBold));
+    }
+    await monoLoader.load();
   }
-  if (bold.existsSync()) {
-    sansLoader.addFont(loadFile('roboto-bold.ttf'));
-  }
-  await sansLoader.load();
-
-  final monoLoader = FontLoader('monospace')
-    ..addFont(loadFile('roboto-regular.ttf'));
-  if (bold.existsSync()) {
-    monoLoader.addFont(loadFile('roboto-bold.ttf'));
-  }
-  await monoLoader.load();
 }
 
 Widget _docFrame({
@@ -99,11 +139,7 @@ Widget _docFrame({
           key: _docBoundaryKey,
           child: ColoredBox(
             color: bg,
-            child: SizedBox(
-              width: width,
-              height: height,
-              child: child,
-            ),
+            child: SizedBox(width: width, height: height, child: child),
           ),
         ),
       );
@@ -157,8 +193,9 @@ void main() {
     });
   }
 
-  testWidgets('Generates and verifies all 10 README visual PNGs at 2x DPI',
-      (WidgetTester tester) async {
+  testWidgets('Generates and verifies all 10 README visual PNGs at 2x DPI', (
+    WidgetTester tester,
+  ) async {
     addTearDown(() {
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
@@ -203,7 +240,9 @@ void main() {
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 1.5,
-                                  color: AetherPresets.bioluminescent.specularColor,
+                                  color: AetherPresets
+                                      .bioluminescent
+                                      .specularColor,
                                 ),
                               ),
                               const SizedBox(height: 10),
@@ -220,7 +259,9 @@ void main() {
                                 'Single-Ticker spatial physics, zero-allocation object pools, Bezier surface tension, and Impeller BackdropGroup batching.',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: const Color(0xFFFFFFFF).withValues(alpha: 0.78),
+                                  color: const Color(
+                                    0xFFFFFFFF,
+                                  ).withValues(alpha: 0.78),
                                 ),
                               ),
                             ],
@@ -246,9 +287,21 @@ void main() {
                     child: Row(
                       children: <Widget>[
                         for (final item in const <(String, String, String)>[
-                          ('Spring Solver', '180 N/m', 'Symplectic 240Hz substep'),
-                          ('Zero-Alloc Pools', '6 Waves • 50 Motes', '14-pt wake ribbon buffer'),
-                          ('Impeller Blur', 'BackdropGroup', 'Shared single-pass blur'),
+                          (
+                            'Spring Solver',
+                            '180 N/m',
+                            'Symplectic 240Hz substep',
+                          ),
+                          (
+                            'Zero-Alloc Pools',
+                            '6 Waves • 50 Motes',
+                            '14-pt wake ribbon buffer',
+                          ),
+                          (
+                            'Impeller Blur',
+                            'BackdropGroup',
+                            'Shared single-pass blur',
+                          ),
                         ]) ...<Widget>[
                           Expanded(
                             child: AetherGlassCard(
@@ -261,7 +314,9 @@ void main() {
                                     item.$1,
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: AetherPresets.bioluminescent.specularColor,
+                                      color: AetherPresets
+                                          .bioluminescent
+                                          .specularColor,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -279,14 +334,17 @@ void main() {
                                     item.$3,
                                     style: TextStyle(
                                       fontSize: 12.5,
-                                      color: const Color(0xFFFFFFFF).withValues(alpha: 0.68),
+                                      color: const Color(
+                                        0xFFFFFFFF,
+                                      ).withValues(alpha: 0.68),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                          if (item.$1 != 'Impeller Blur') const SizedBox(width: 18),
+                          if (item.$1 != 'Impeller Blur')
+                            const SizedBox(width: 18),
                         ],
                       ],
                     ),
@@ -400,7 +458,8 @@ void main() {
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                             letterSpacing: 1.2,
-                            color: AetherPresets.bioluminescent.ripplePrimaryColor,
+                            color:
+                                AetherPresets.bioluminescent.ripplePrimaryColor,
                           ),
                         ),
                         const SizedBox(height: 18),
@@ -497,8 +556,10 @@ void main() {
                                       tiltStrength: 1.25,
                                       padding: const EdgeInsets.all(18),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: <Widget>[
                                           Text(
                                             'Node [${r + 1},${col + 1}]',
@@ -506,7 +567,8 @@ void main() {
                                               fontSize: 13,
                                               fontWeight: FontWeight.w700,
                                               color: AetherPresets
-                                                  .bioluminescent.ripplePrimaryColor,
+                                                  .bioluminescent
+                                                  .ripplePrimaryColor,
                                             ),
                                           ),
                                           const SizedBox(height: 6),
@@ -647,11 +709,7 @@ void main() {
         c3.dispose();
       });
 
-      Widget panel(
-        String label,
-        AetherFieldController ctrl,
-        String btnText,
-      ) {
+      Widget panel(String label, AetherFieldController ctrl, String btnText) {
         return Expanded(
           child: AetherStage(
             controller: ctrl,
@@ -909,8 +967,9 @@ void main() {
             ),
             child: Builder(
               builder: (BuildContext context) {
-                final cardRadius =
-                    AetherAdaptiveGeometry.resolveCardRadius(context);
+                final cardRadius = AetherAdaptiveGeometry.resolveCardRadius(
+                  context,
+                );
                 return Container(
                   margin: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
@@ -1304,16 +1363,8 @@ class _ArchitectureDiagramPainter extends CustomPainter {
         final ay1 = y + boxH + 3;
         final ay2 = y + boxH + gap - 3;
         canvas.drawLine(Offset(cx, ay1), Offset(cx, ay2), arrowPaint);
-        canvas.drawLine(
-          Offset(cx - 5, ay2 - 5),
-          Offset(cx, ay2),
-          arrowPaint,
-        );
-        canvas.drawLine(
-          Offset(cx + 5, ay2 - 5),
-          Offset(cx, ay2),
-          arrowPaint,
-        );
+        canvas.drawLine(Offset(cx - 5, ay2 - 5), Offset(cx, ay2), arrowPaint);
+        canvas.drawLine(Offset(cx + 5, ay2 - 5), Offset(cx, ay2), arrowPaint);
       }
     }
   }
@@ -1510,12 +1561,7 @@ class _BenchmarkChartPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-void _paintTitle(
-  Canvas canvas,
-  String title,
-  String subtitle,
-  Offset offset,
-) {
+void _paintTitle(Canvas canvas, String title, String subtitle, Offset offset) {
   _drawText(
     canvas,
     title,

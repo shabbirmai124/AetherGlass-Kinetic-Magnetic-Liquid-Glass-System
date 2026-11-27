@@ -32,15 +32,13 @@ final class AetherTrailPoint {
 /// that fade smoothly over `280 ms`.
 final class WakeTrailBuffer {
   /// Creates a fixed ring buffer with [capacity] slots (default 14).
-  WakeTrailBuffer({
-    this.capacity = 14,
-    this.fadeSeconds = 0.28,
-  })  : assert(capacity >= 2 && capacity <= 32),
-        _points = List<AetherTrailPoint>.generate(
-          capacity,
-          (_) => AetherTrailPoint(),
-          growable: false,
-        ) {
+  WakeTrailBuffer({this.capacity = 14, this.fadeSeconds = 0.28})
+    : assert(capacity >= 2 && capacity <= 32),
+      _points = List<AetherTrailPoint>.generate(
+        capacity,
+        (_) => AetherTrailPoint(),
+        growable: false,
+      ) {
     _view = UnmodifiableListView<AetherTrailPoint>(_points);
   }
 

@@ -4,8 +4,8 @@
 /// Exported layers:
 /// - **Physics:** [SpringSolver], [AetherSpringState], [RippleWavePool],
 ///   [AetherRipple], [AetherRippleKind], [AmbientMotePool], [AetherMote],
-///   [WakeTrailBuffer], [AetherTrailPoint], [AetherCardForceState],
-///   [AetherFieldController].
+///   [WakeTrailBuffer], [AetherTrailPoint], [SpatialCardNode],
+///   [AetherCardForceState], [AetherFieldController].
 /// - **Theme:** [AetherThemeData], [AetherPresets], [AetherPreset].
 /// - **Input:** [AetherSurfaceListener], [HapticPulseGuard].
 /// - **Renderer:** [AetherFieldPainter], [LiquidEdgeClipper],
@@ -21,6 +21,7 @@ export 'src/input/haptic_pulse_guard.dart';
 export 'src/physics/aether_field_controller.dart';
 export 'src/physics/ambient_mote_pool.dart';
 export 'src/physics/ripple_wave_pool.dart';
+export 'src/physics/spatial_card_node.dart';
 export 'src/physics/spring_solver.dart';
 export 'src/physics/wake_trail_buffer.dart';
 export 'src/renderer/aether_field_painter.dart';
