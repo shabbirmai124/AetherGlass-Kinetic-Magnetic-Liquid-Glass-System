@@ -1,6 +1,7 @@
 # AetherGlass Technical Architecture
 
-**Author:** Md Shabbir Mia (`shabbirmia520@gmail.com`)  
+**Maintainer:** Md Shabbir Mia ([shabbirmia520@gmail.com](mailto:shabbirmia520@gmail.com))  
+**Repository:** [https://github.com/mdshabbirmia/aether_glass](https://github.com/mdshabbirmia/aether_glass)  
 **Runtime Stack:** 100% Pure Flutter & Dart SDK (Zero Third-Party Runtime Dependencies, Zero Foreign Languages)
 
 **AetherGlass** is a zero-dependency pure-Dart rendering and spatial physics engine built exclusively on Flutter SDK primitives (`flutter/widgets.dart`, `flutter/scheduler.dart`, `flutter/services.dart`, `flutter/foundation.dart`, `dart:ui`, `dart:math`, `dart:typed_data`). It replaces isolated per-widget animation controllers and redundant screen-buffer blurs with a single synchronized frame clock and Impeller-friendly backdrop compositing.

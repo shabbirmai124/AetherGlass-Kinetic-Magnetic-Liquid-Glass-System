@@ -4,6 +4,8 @@
 
 **100% Pure-Flutter, zero-dependency kinetic liquid-glass rendering & spatial physics engine engineered for 60–120Hz mobile, desktop, and WebAssembly (Wasm) hardware.**
 
+*Engineered by **Md Shabbir Mia** — [shabbirmia520@gmail.com](mailto:shabbirmia520@gmail.com)*
+
 [![100% Pure Dart & Flutter](https://img.shields.io/badge/Flutter-100%25%20Pure%20Dart-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Zero Dependencies](https://img.shields.io/badge/Runtime%20Dependencies-Zero%20Third--Party-00C853)](pubspec.yaml)
 [![Impeller Batched](https://img.shields.io/badge/Compositor-Impeller%20BackdropGroup-00BFA5)](docs/ARCHITECTURE.md)
@@ -312,5 +314,5 @@ flutter build web --wasm
 - **License:** [MIT License](LICENSE)
 
 **Author & Maintainer:** **Md Shabbir Mia**  
-**Email:** `shabbirmia520@gmail.com`  
+**Email:** [shabbirmia520@gmail.com](mailto:shabbirmia520@gmail.com)  
 **Repository:** [https://github.com/mdshabbirmia/aether_glass](https://github.com/mdshabbirmia/aether_glass)

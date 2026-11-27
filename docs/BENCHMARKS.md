@@ -1,6 +1,7 @@
 # AetherGlass Performance & Benchmark Methodology
 
-**Author:** Md Shabbir Mia (`shabbirmia520@gmail.com`)
+**Maintainer:** Md Shabbir Mia ([shabbirmia520@gmail.com](mailto:shabbirmia520@gmail.com))  
+**Repository:** [https://github.com/mdshabbirmia/aether_glass](https://github.com/mdshabbirmia/aether_glass)
 
 This document records verified measurements gathered from the codebase in this environment alongside reproducible Flutter Profile-mode procedures for physical Android, iOS, Desktop, and WebAssembly targets.
 
